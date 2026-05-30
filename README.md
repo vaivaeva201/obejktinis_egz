@@ -1,0 +1,1 @@
+# obejktinis_egz
