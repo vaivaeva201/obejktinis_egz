@@ -36,7 +36,7 @@ string failo_pasirinkimas()
     return pavadinimas;
 }
 
-void failo_nuskaitymas(const string pavadinimas)
+void zodziu_skaiciavimas(const string pavadinimas)
 {
     wifstream failas (pavadinimas);
     if (!failas)
@@ -51,6 +51,26 @@ void failo_nuskaitymas(const string pavadinimas)
 
     map <wstring, int> kiekis;
     wstring zodis;
-    
+    while  (buferis >> zodis)
+    {
+        wstring sutvarkytas_zod = zodzio_sutvarkymas(zodis);
+        if (!sutvarkytas_zod.empty())
+        {
+            kiekis[sutvarkytas_zod]++;
+        }
+    }
+}
 
+wstring zodzio_sutvarkymas(const wstring &zodis)
+{
+    wstring naujas;
+    for (wchar_t c : zodis)
+    {
+        if (iswalpha(c))
+        {
+            naujas += towlower(c);
+        }
+    }
+
+    return naujas;
 }
