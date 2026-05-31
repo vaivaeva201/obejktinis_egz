@@ -12,5 +12,6 @@ int main()
     zodziu_skaiciavimas(failas, kiekis);
     saraso_isvedimas(kiekis, "zodziu_pasikartojimai.txt");
     cross_reference(failas);
-
+    string url_failas = failo_pasirinkimas();
+    url_aptikimas(url_failas);
 }   

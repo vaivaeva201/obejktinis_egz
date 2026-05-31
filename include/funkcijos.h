@@ -8,5 +8,8 @@ wstring zodzio_sutvarkymas(const wstring &zodis);
 void saraso_isvedimas(map <wstring, int> &kiekis, string pav);
 void cross_reference(const string pavadinimas);
 void lenteles_isvedimas(map <wstring, int> &kiekis, map<wstring, set<int>> eilutes,string pav);
+void url_aptikimas(string failas);
+wstring pasalinti_zenklus(const wstring &zodis);
+bool tikrinimas(const wstring &zodis, const unordered_set<wstring> &galimi_url);
 
 #endif

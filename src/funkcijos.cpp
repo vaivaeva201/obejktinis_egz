@@ -1,8 +1,6 @@
 #include "funkcijos.h"
 #include "santraukos.h"
 
-//  patikrinti ^
-
 string failo_pasirinkimas()
 {
     string pavadinimas;
@@ -129,7 +127,7 @@ void cross_reference(const string pavadinimas)
         }
         nr++;
     }
-    
+
     lenteles_isvedimas(kiekis, eilutes, "cross_reference.txt");
 }
 
@@ -159,4 +157,109 @@ void lenteles_isvedimas(map <wstring, int> &kiekis, map<wstring, set<int>> eilut
 		}
     rezultatai.close();
     cout << "Rezultatai isvesti i faila: '"<< pav << "'; " << endl;
+}
+
+void url_aptikimas(string failas)
+{
+    wifstream url("visi_url.txt");
+
+    unordered_set<wstring> galimi_url;
+	wstring eilute;
+	while (getline(url, eilute))
+	{
+		if (!eilute.empty())
+		{
+			transform(eilute.begin(), eilute.end(), eilute.begin(), ::tolower);
+			galimi_url.insert(eilute);
+		}
+	}
+    url.close();
+
+    wifstream tekstas(failas);
+    if (!tekstas)
+    {
+        throw std::ios_base::failure("Klaida: nepavyko atidaryti failo!");
+        return;
+    }
+    tekstas.imbue(std::locale("lt_LT.UTF-8"));
+
+    wstringstream buferis;
+	buferis << tekstas.rdbuf();
+	tekstas.close();
+
+    set <wstring> sarasas;
+    wstring zodis;
+
+    while (buferis >> zodis)
+    {
+        wstring isvalytas = pasalinti_zenklus(zodis);
+
+        if (tikrinimas(isvalytas, galimi_url))
+        {
+            for (wchar_t &c : isvalytas) 
+                c = towlower(c);
+            sarasas.insert(isvalytas);
+        }
+    }
+
+    wofstream rezultatai("rasti_url.txt");
+    rezultatai.imbue(std::locale("lt_LT.UTF-8"));
+
+    for (const auto &x : sarasas)
+    {
+        rezultatai << x << L"\n";
+    }
+    rezultatai.close();
+
+    cout << "Rezultatai isvesti i faila: 'rasti_url.txt';" << endl;
+		
+}
+
+wstring pasalinti_zenklus(const wstring &zodis)
+{
+    size_t pabaiga = zodis.size();
+    while (pabaiga > 0 && ispunct(zodis[pabaiga - 1]) && zodis[pabaiga - 1] != L'/')
+    {
+        --pabaiga;
+    }
+    return zodis.substr(0, pabaiga);
+}
+
+bool tikrinimas(const wstring &zodis, const unordered_set<wstring> &galimi_url)
+{
+    vector <wstring> tikrinami;
+    wstring dalis;
+
+    for (wchar_t c : zodis)
+    {
+        if (c == L'.' || c == L'/' || c == L':')
+        {
+            if (!dalis.empty())
+            {
+                tikrinami.push_back(dalis);
+                dalis.clear();
+            }
+        }
+        else
+        {
+            dalis += towlower(c);
+        }
+    }
+    
+    if (!dalis.empty())
+    {
+        tikrinami.push_back(dalis);
+    }
+    if (tikrinami.size() < 2)
+        return false;
+    
+    for (int i = static_cast<int>(tikrinami.size()) - 2; i >= 0; --i)
+    {
+        wstring galimasTLD = tikrinami[i + 1];
+        if (galimi_url.count(galimasTLD))
+            return true;
+    }
+
+    return false;
+        
 }
