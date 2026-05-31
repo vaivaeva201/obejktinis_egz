@@ -8,5 +8,7 @@ int main()
     std::wcin.imbue(std::locale());
 
     string failas = failo_pasirinkimas();
-    zodziu_skaiciavimas(failas);
+    map <wstring, int> kiekis;
+    zodziu_skaiciavimas(failas, kiekis);
+    saraso_isvedimas(kiekis);
 }   

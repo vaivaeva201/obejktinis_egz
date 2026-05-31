@@ -36,7 +36,7 @@ string failo_pasirinkimas()
     return pavadinimas;
 }
 
-void zodziu_skaiciavimas(const string pavadinimas)
+void zodziu_skaiciavimas(const string pavadinimas, map <wstring, int> &kiekis)
 {
     wifstream failas (pavadinimas);
     if (!failas)
@@ -45,11 +45,12 @@ void zodziu_skaiciavimas(const string pavadinimas)
         return;
     }
 
+    failas.imbue(std::locale("lt_LT.UTF-8"));
+
     wstringstream buferis;
 	buferis << failas.rdbuf();
 	failas.close();
 
-    map <wstring, int> kiekis;
     wstring zodis;
     while  (buferis >> zodis)
     {
@@ -73,4 +74,20 @@ wstring zodzio_sutvarkymas(const wstring &zodis)
     }
 
     return naujas;
+}
+
+void saraso_isvedimas(map <wstring, int> &kiekis)
+{
+    wofstream rezultatai("zodziu_pasikartojimai.txt");
+    rezultatai.imbue(std::locale("lt_LT.UTF-8"));
+
+    for (const auto &x : kiekis)
+    {
+        if (x.second > 1)
+		{
+			rezultatai << x.first << ": " << x.second << endl;
+		}
+    }
+
+    rezultatai.close();
 }
