@@ -10,5 +10,7 @@ int main()
     string failas = failo_pasirinkimas();
     map <wstring, int> kiekis;
     zodziu_skaiciavimas(failas, kiekis);
-    saraso_isvedimas(kiekis);
+    saraso_isvedimas(kiekis, "zodziu_pasikartojimai.txt");
+    cross_reference(failas);
+
 }   
